@@ -22,11 +22,16 @@ public class WebSearch extends HttpServlet {
         out.println("<head>");
         out.println("<meta charset='UTF-8'>");
         out.println("<title>Biblioteca</title>");
-        out.println("<body  style='display: flex; text-align:center; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px;'>");
+        // Body centrado vertical y horizontal, fondo completo
+        out.println("<body style=\"margin: 0; height: 100vh; display: flex; flex-direction: column; " +
+                "align-items: center; justify-content: center; " +
+                "background: url('https://images.pexels.com/photos/8834282/pexels-photo-8834282.jpeg') center/cover no-repeat fixed;\">");
+
 
         out.println("<h1>BUSQUEDA</h1>");
         out.println("<h2>Campos</h2>\n");
-        out.println("<form id=\"fomulario\" action=\"/BibliotecaServlet/WebFound\" method=\"GET\">");
+        out.println("<form id=\"fomulario\" action=\"/BibliotecaServlet/WebFound\" method=\"GET\"" +
+                " style=\"display: flex; flex-direction: column; align-items: center;\">");
         out.println("<input  style='margin: 8px;'type=text name=\"titulo\" placeholder=\"Titulo del libro\"><br>");
         out.println("<input style='margin: 8px;' type=text name=\"autor\" placeholder=\"Autor del libro\"><br>");
         out.println(" <input type=\"submit\" value=\"Buscar\"><br>");

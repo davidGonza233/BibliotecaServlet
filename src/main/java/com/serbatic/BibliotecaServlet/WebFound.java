@@ -10,8 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
-import static com.serbatic.BibliotecaServlet.utils.red;
-import static com.serbatic.BibliotecaServlet.utils.reset;
 
 @WebServlet("/WebFound")
 
@@ -56,9 +54,9 @@ public class WebFound extends HttpServlet {
         out.println("<head>");
         out.println("<meta charset='UTF-8'>");
         out.println("<title>Biblioteca</title>");
-        out.println("<body> ");
+        out.println("<body>");
         out.println("<h1>BUSQUEDA</h1>");
-        out.println("<h2>Resultados</h2>\n");
+
 
         String title = request.getParameter("titulo");
         String author = request.getParameter("autor");
@@ -100,146 +98,164 @@ public class WebFound extends HttpServlet {
         ArrayList<String[]> foundAuthorList;
         ArrayList<String[]> foundTitleList;
 
+        //los dos campos vacios
         if (title.isBlank() && author.isBlank()) {
+
             ArrayList<String[]> foundList = myLibrary.listBooks();
+            //si la lista no esta vacia de campos vacios
             if (!foundList.isEmpty()) {
+                out.println("<h2>Resultados</h2>\n");
                 // Crear la tabla y el encabezado con bordes sólidos y padding
                 out.println("<table style='border-collapse: collapse; width: 100%; border: 1px solid black;'>");
                 out.println(" <caption style=\"caption-side: top; font-weight: bold; font-size: 18px; margin-bottom: 10px;\">\n" +
                         "        Lista de Libros\n" +
                         "    </caption>");
-                out.println("<tr style='background-color: #f2f2f2;'>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Título</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Autor</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>ISBN</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Fecha de publicación</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Cantidad</th>");
-                out.println("</tr>");
+                out.println(InsertTableHeading());
 
 // Recorrer la lista de resultados
-                for (String[] data : foundList) {
-                    out.println("<tr>");
-                    for (String dat : data) {
-                        out.println("<td style='border: 1px solid black; padding: 10px;'>" + dat + "</td>");
-                    }
-                    out.println("</tr>");
-                }
 
-                out.println("</table>");
-            }else{
+                printData(out, foundList);
+
+            } else {
                 out.println("<h2>Sin resultados</h2>\n");
 
             }
+            //rellenar los dos campo de texto y comparar
         } else if (!title.isBlank() && !author.isBlank()) {
             foundTitleList = myLibrary.searchTitle(title);
             foundAuthorList = myLibrary.searchAuthor(author);
-            ArrayList<String[]> lista = new ArrayList<>();
+            ArrayList<String[]> list = new ArrayList<>();
 
 
             // Comparacion de los dos arraylist
             for (String[] t : foundTitleList) {
                 for (String[] a : foundAuthorList) {
                     if (Arrays.equals(t, a)) { // compara contenido del array
-                        lista.add(t);
+                        list.add(t);
                     }
                 }
             }
-
-            if (!lista.isEmpty()) {
+// si no esta vacia la busqueda hace esto
+            if (!list.isEmpty()) {
+                out.println("<h2>Resultados</h2>\n");
                 // Crear la tabla y el encabezado con bordes sólidos y padding
                 out.println("<table style='border-collapse: collapse; width: 100%; border: 1px solid black;'>");
                 out.println(" <caption style=\"caption-side: top; font-weight: bold; font-size: 18px; margin-bottom: 10px;\">\n" +
                         "        Lista de Libros de autor y libro\n" +
                         "    </caption>");
-                out.println("<tr style='background-color: #f2f2f2;'>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Título</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Autor</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>ISBN</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Fecha de publicación</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Cantidad</th>");
-                out.println("</tr>");
+                out.println(InsertTableHeading());
 
 // Recorrer la lista de resultados
-                for (String[] data : lista) {
-                    out.println("<tr>");
-                    for (String dat : data) {
-                        out.println("<td style='border: 1px solid black; padding: 10px;'>" + dat + "</td>");
-                    }
-                    out.println("</tr>");
+
+                printData(out, list);
+
+            } else {
+                // Cuando no encuntra resultados es porque no hay coinicidencias y de alguna manera mostrar algo
+                out.println("<h2>Sin resultados</h2>\n");
+                out.println("<h2>Libros encontrados por busquedas separadas</h2>\n");
+                if (!foundTitleList.isEmpty()) {
+                    out.println("<h2>Resultados por busqueda de titulo</h2>\n");
+                    // Crear la tabla y el encabezado con bordes sólidos y padding
+                    out.println("<table style='border-collapse: collapse; width: 100%; border: 1px solid black;'>");
+                    out.println(" <caption style=\"caption-side: top; font-weight: bold; font-size: 18px; margin-bottom: 10px;\">\n" +
+                            "        Lista de Libros por titulo\n" +
+                            "    </caption>");
+                    out.println(InsertTableHeading());
+
+// Recorrer la lista de resultados
+                    printData(out, foundTitleList);
+
+                }
+                if (!foundAuthorList.isEmpty()) {
+                    out.println("<h2>Resultados encontrados por busqueda de autor</h2>\n");
+                    // Crear la tabla y el encabezado con bordes sólidos y padding
+                    out.println("<table style='border-collapse: collapse; width: 100%; border: 1px solid black;'>");
+                    out.println(" <caption style=\"caption-side: top; font-weight: bold; font-size: 18px; margin-bottom: 10px;\">\n" +
+                            "        Lista de Libros por autor\n" +
+                            "    </caption>");
+                    out.println(InsertTableHeading());
+
+// Recorrer la lista de resultados
+                    printData(out, foundAuthorList);
+
                 }
 
-                out.println("</table>");
-            }else{
-                out.println("<h2>Sin resultados</h2>\n");
-
             }
+            //si el titulo no esta vacio
         } else if (!title.isBlank()) {
             foundTitleList = myLibrary.searchTitle(title);
             System.out.println("Titulo : " + title);
             if (!foundTitleList.isEmpty()) {
-
+                out.println("<h2>Resultados</h2>\n");
                 // Crear la tabla y el encabezado con bordes sólidos y padding
                 out.println("<table style='border-collapse: collapse; width: 100%; border: 1px solid black;'>");
                 out.println(" <caption style=\"caption-side: top; font-weight: bold; font-size: 18px; margin-bottom: 10px;\">\n" +
                         "        Lista de Libros por titulo\n" +
                         "    </caption>");
-                out.println("<tr style='background-color: #f2f2f2;'>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Título</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Autor</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>ISBN</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Fecha de publicación</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Cantidad</th>");
-                out.println("</tr>");
+                out.println(InsertTableHeading());
 
 // Recorrer la lista de resultados
-                for (String[] data : foundTitleList) {
-                    out.println("<tr>");
-                    for (String dat : data) {
-                        out.println("<td style='border: 1px solid black; padding: 10px;'>" + dat + "</td>");
-                    }
-                    out.println("</tr>");
-                }
 
-                out.println("</table>");
-            }else{
+                printData(out, foundTitleList);
+
+            } else {
                 out.println("<h2>Sin resultados</h2>\n");
 
+
             }
+            //si el autor no esta vacio
         } else if (!author.isBlank()) {
             foundAuthorList = myLibrary.searchAuthor(author);
             if (!foundAuthorList.isEmpty()) {
+                out.println("<h2>Resultados</h2>\n");
                 // Crear la tabla y el encabezado con bordes sólidos y padding
                 out.println("<table style='border-collapse: collapse; width: 100%; border: 1px solid black;'>");
                 out.println(" <caption style=\"caption-side: top; font-weight: bold; font-size: 18px; margin-bottom: 10px;\">\n" +
                         "        Lista de Libros por autor\n" +
                         "    </caption>");
-                out.println("<tr style='background-color: #f2f2f2;'>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Título</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Autor</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>ISBN</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Fecha de publicación</th>");
-                out.println("<th style='border: 1px solid black; padding: 10px;'>Cantidad</th>");
-                out.println("</tr>");
+                out.println(InsertTableHeading());
 
 // Recorrer la lista de resultados
-                for (String[] data : foundAuthorList) {
-                    out.println("<tr>");
-                    for (String dat : data) {
-                        out.println("<td style='border: 1px solid black; padding: 10px;'>" + dat + "</td>");
-                    }
-                    out.println("</tr>");
-                }
 
-                out.println("</table>");
-            }else{
+                printData(out, foundAuthorList);
+
+            } else {
                 out.println("<h2>Sin resultados</h2>\n");
 
             }
         }
 
-        out.println("</body");
+        out.println("</body>");
+        out.println("</html>");
+
     }
 
 
+    public static String InsertTableHeading() {
+
+        String textHeading =
+                // Crear la tabla y el encabezado con bordes sólidos y padding
+                "<tr style='background-color: #f2f2f2;'>" +
+                        "<th style='border: 1px solid black; padding: 10px;'>Título</th>" +
+                        "<th style='border: 1px solid black; padding: 10px;'>Autor</th>" +
+                        "<th style='border: 1px solid black; padding: 10px;'>ISBN</th>" +
+                        "<th style='border: 1px solid black; padding: 10px;'>Cantidad</th>" +
+                        "<th style='border: 1px solid black; padding: 10px;'>Fecha de publicación</th>" +
+                        "</tr>";
+
+        return textHeading;
+    }
+
+    private void printData(PrintWriter out, ArrayList<String[]> list) {
+        for (String[] data : list) {
+            out.println("<tr>");
+            for (String dat : data) {
+                out.println("<td style='border: 1px solid black; padding: 10px;'>" + dat + "</td>");
+            }
+            out.println("</tr>");
+        }
+
+        out.println("</table>");
+    }
 }
 
