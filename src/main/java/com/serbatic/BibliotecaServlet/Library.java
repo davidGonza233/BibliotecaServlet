@@ -7,9 +7,10 @@ import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.ArrayList;
+
 
 import static com.serbatic.BibliotecaServlet.utils.*;
-
 
 
 public class Library {
@@ -104,7 +105,7 @@ public class Library {
 
 
                                 case "s":
-                                //añdir ejemplares si esta repetido
+                                    //añdir ejemplares si esta repetido
                                     do {
                                         System.out.println("Dame la cantidad de ejemplares a añadir (Atras a):");
                                         try {
@@ -227,6 +228,13 @@ public class Library {
             bookComplete = false;
 
         } else {
+
+
+            if (catalog.contains(new Book("default", "defautl", isbn, null, null))) {
+                System.out.println("Libro ya existente");
+
+
+            }
             if (!checkIsbn(isbn)) {
                 bookComplete = false;
             }
@@ -311,45 +319,61 @@ public class Library {
     }
 
     // Muestra todos los libros con toString
-    public void listBooks() {
+    public ArrayList<String[]> listBooks() {
+        String[] data;
+        ArrayList<String[]> list = new ArrayList<>();
         for (Book book : catalog) {
-            System.out.println(book.toString());
+
+            data = book.toString().split(";");
+            list.add(data);
+
         }
+        return list;
     }
 
     // Busqueda por titulo
-    public void searchTitle(String titleFound) {
+    public ArrayList<String[]> searchTitle(String titleFound) {
+
+        String[] data;
+        ArrayList<String[]> list = new ArrayList<>();
+
         for (Book book : catalog) {
 
-            // Se normaliza el texto para quitar las tildes y poder comparar bien los textos
-            // tambien lo que hace el normalizer es descomponer las tildes, para eliminarlas hay que reemplazarlas
-            // con remplaceAll
+
             if (Normalizer.normalize(book.getTitle().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").contains(Normalizer.normalize(titleFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
-                System.out.println(book.toString());
+                data = book.toString().split(";");
+                list.add(data);
             }
 
         }
+        return list;
     }
 
     // Busqueda por Autor
-    public void searchAuthor(String authorFound) {
+    public ArrayList<String[]> searchAuthor(String authorFound) {
+
+        String[] data;
+        ArrayList<String[]> list = new ArrayList<>();
+
         for (Book book : catalog) {
 
-            // Se normaliza el texto para quitar las tildes y poder comparar bien los textos
-            // tambien lo que hace el normalizer es descomponer las tildes, para eliminarlas hay que reemplazarlas
-            // con remplaceAll
+
             if (Normalizer.normalize(book.getAuthor().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").contains(Normalizer.normalize(authorFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
-                System.out.println(book.toString());
+                data = book.toString().split(";");
+                list.add(data);
             }
 
         }
+        return list;
+
+
     }
 
     //metodo para comprobar si el isbn es correcto
     public boolean checkIsbn(String isbnChek) {
 
         String isbnSinGuiones = isbnChek.replaceAll("-", "").trim();
-        if (isbnSinGuiones.matches("^97[8,9]\\d{10}$")) {
+        if (isbnSinGuiones.matches("^97[89]\\d{10}$")) {
             if (!isbnSinGuiones.equals(isbnChek)) {
 
                 String regex = "^97[89]-\\d{1,5}-\\d{1,7}-\\d{1,7}-\\d$";
@@ -358,6 +382,7 @@ public class Library {
                     System.out.println("    -Introdujiste un ISBN no valido, revisa los numeros");
                     return false;
                 }
+                return true;
             }
         } else {
             //en este apartado si quitas el valir= false te dice si lo has metido bien pero luego te lo busca igual independientemente

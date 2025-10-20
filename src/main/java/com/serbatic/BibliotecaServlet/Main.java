@@ -14,7 +14,7 @@ import static com.serbatic.BibliotecaServlet.utils.*;
 
 public class Main {
     public static void main(String[] args) {
-        String persistencePath = "src/main/resources/persistence.json";
+        String persistencePath = "C:\\Users\\Formacion\\IdeaProjects\\BibliotecaServlet\\src\\resources\\persistence.json";
         Set<Book> books = new HashSet<>();
         Scanner sc = new Scanner(System.in);
         Library myLibrary = new Library(books);

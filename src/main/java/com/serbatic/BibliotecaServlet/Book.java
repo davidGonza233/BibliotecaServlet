@@ -67,11 +67,7 @@ public class Book {
     @Override
     public String toString() {
 
-        return blue + "Titulo: " + reset + title +
-                blue + " Autor: " + reset + author +
-                blue + " ISBN: " + reset + isbn +
-                blue + " Cantidad: " + reset + amount+
-                blue + " Fecha de publicación: " + reset + publicationDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        return title + ";" + author + ";" + isbn + ";" + amount + "; " + publicationDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
     }
 
