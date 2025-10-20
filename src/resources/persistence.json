@@ -1,24 +1,24 @@
 [
   {
-    "title": "Cien años de soledad",
+    "title": "dsafa",
+    "author": "paco",
+    "isbn": "978-000-000-000-7",
+    "publicationDate": "17/10/2025",
+    "amount": 1
+  },
+  {
+    "title": "Crónica de una muerte anunciada",
     "author": "Gabriel García Márquez",
-    "isbn": "978-0-307-47472-8",
-    "publicationDate": "30/05/1967",
-    "amount": 12
+    "isbn": "9780307387747",
+    "publicationDate": "01/03/1981",
+    "amount": 6
   },
   {
-    "title": "1984",
-    "author": "George Orwell",
-    "isbn": "9780451524935",
-    "publicationDate": "08/06/1950",
-    "amount": 8
-  },
-  {
-    "title": "El señor de los anillos",
-    "author": "J.R.R. Tolkien",
-    "isbn": "978-0-261-10238-5",
-    "publicationDate": "29/07/1954",
-    "amount": 5
+    "title": "titulo",
+    "author": "gabriel",
+    "isbn": "978-000-000-009-0",
+    "publicationDate": "14/10/2025",
+    "amount": 1
   },
   {
     "title": "La sombra del viento",
@@ -28,9 +28,72 @@
     "amount": 10
   },
   {
+    "title": "a",
+    "author": "gabriel",
+    "isbn": "978-000-000-000-3",
+    "publicationDate": "11/10/2025",
+    "amount": 1
+  },
+  {
+    "title": "a",
+    "author": "gabriel",
+    "isbn": "978-000-000-000-4",
+    "publicationDate": "12/10/2025",
+    "amount": 6
+  },
+  {
     "title": "Fahrenheit 451",
     "author": "Ray Bradbury",
     "isbn": "9781451673319",
+    "publicationDate": "19/10/1953",
+    "amount": 7
+  },
+  {
+    "title": "adsf",
+    "author": "gabriel",
+    "isbn": "978-000-000-000-5",
+    "publicationDate": "12/10/2025",
+    "amount": 1
+  },
+  {
+    "title": "a",
+    "author": "gabriel",
+    "isbn": "9780000000000",
+    "publicationDate": "03/10/2025",
+    "amount": 1
+  },
+  {
+    "title": "adsf",
+    "author": "af",
+    "isbn": "978-000-000-000-6",
+    "publicationDate": "17/10/2025",
+    "amount": 7
+  },
+  {
+    "title": "a",
+    "author": "gabriel",
+    "isbn": "978-000-000-000-0",
+    "publicationDate": "10/10/2025",
+    "amount": 7
+  },
+  {
+    "title": "a",
+    "author": "gabriel",
+    "isbn": "978-000-000-000-1",
+    "publicationDate": "11/10/2025",
+    "amount": 5
+  },
+  {
+    "title": "Cien años de soledad",
+    "author": "Gabriel García Márquez",
+    "isbn": "978-0-307-47472-8",
+    "publicationDate": "30/05/1967",
+    "amount": 12
+  },
+  {
+    "title": "Fahrenheit 451",
+    "author": "Ray Bradbury",
+    "isbn": "978-1-4516-7331-9",
     "publicationDate": "19/10/1953",
     "amount": 7
   },
@@ -42,25 +105,11 @@
     "amount": 9
   },
   {
-    "title": "Crónica de una muerte anunciada",
-    "author": "Gabriel García Márquez",
-    "isbn": "9780307387747",
-    "publicationDate": "01/03/1981",
-    "amount": 6
-  },
-  {
-    "title": "Cien años de soledad",
-    "author": "Gabriel García Márquez",
-    "isbn": "978-0-307-47472-8",
-    "publicationDate": "30/05/1967",
-    "amount": 12
-  },
-  {
-    "title": "1984",
-    "author": "George Orwell",
-    "isbn": "9780451524935",
-    "publicationDate": "08/06/1949",
-    "amount": 8
+    "title": "titulo",
+    "author": "autor",
+    "isbn": "9780001112225",
+    "publicationDate": "10/10/2025",
+    "amount": 1
   },
   {
     "title": "El señor de los anillos",
@@ -70,13 +119,6 @@
     "amount": 5
   },
   {
-    "title": "Don Quijote de la Mancha",
-    "author": "Miguel de Cervantes",
-    "isbn": "9788491050297",
-    "publicationDate": "16/01/1605",
-    "amount": 4
-  },
-  {
     "title": "La sombra del viento",
     "author": "Carlos Ruiz Zafón",
     "isbn": "978-84-08-17217-7",
@@ -84,17 +126,10 @@
     "amount": 10
   },
   {
-    "title": "Crimen y castigo",
-    "author": "Fiódor Dostoyevski",
-    "isbn": "9781234567890",
-    "publicationDate": "01/01/1866",
-    "amount": 6
-  },
-  {
-    "title": "Fahrenheit 451",
-    "author": "Ray Bradbury",
-    "isbn": "978-1-4516-7331-9",
-    "publicationDate": "19/10/1953",
-    "amount": 7
+    "title": "1984",
+    "author": "George Orwell",
+    "isbn": "9780451524935",
+    "publicationDate": "08/06/1950",
+    "amount": 8
   }
 ]

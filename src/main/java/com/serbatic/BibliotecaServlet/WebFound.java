@@ -17,12 +17,11 @@ public class WebFound extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        String persistencePath = "C:\\Users\\Formacion\\IdeaProjects\\BibliotecaServlet\\src\\resources\\persistence.json";
 
         Library myLibrary = new Library(new HashSet<>());
 
         // Leer archivo JSON y cargar libros
-        try (Reader reader = new FileReader(persistencePath)) {
+        try (Reader reader = new FileReader(utils.persistencePath)) {
             JsonArray booksArray = JsonParser.parseReader(reader).getAsJsonArray();
             for (JsonElement element : booksArray) {
                 JsonObject b = element.getAsJsonObject();
@@ -51,10 +50,30 @@ public class WebFound extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.println("<!DOCTYPE html>");
         out.println("<html lang='es'>");
+        out.println(" <style>\n" +
+                "        /* Estilo base de los enlaces */\n" +
+                "        a {\n" +
+                "               margin: 10px;  " +
+                "  display: inline-block;" +
+                "            color: black;              /* Color negro */\n" +
+                "            font-size: 18px;           /* Tamaño más grande */\n" +
+                "            text-decoration: none;     /* Sin subrayado */\n" +
+                "            font-size: 20px;            /* Se hace un poco más grande */\n" +
+
+                "        }\n" +
+                "\n" +
+                "        /* Estilo cuando el mouse pasa sobre el enlace */\n" +
+                "        a:hover {\n" +
+                "            text-decoration: underline; /* Se subraya al pasar el mouse */\n" +
+                "            font-size: 25px;            /* Se hace un poco más grande */\n" +
+                "        }\n" +
+                "    </style>");
         out.println("<head>");
         out.println("<meta charset='UTF-8'>");
         out.println("<title>Biblioteca</title>");
-        out.println("<body>");
+
+        out.println("<body style=\"background-color: #EFECDE;\">");
+
         out.println("<h1>BUSQUEDA</h1>");
 
 
@@ -224,7 +243,8 @@ public class WebFound extends HttpServlet {
 
             }
         }
-
+        out.println("<a href=\"WebSearch\"> ➤ Buscar libros</a><br>");
+        out.println("<a href=\"WebAdd\"> ➤ Añadir libros</a><br>");
         out.println("</body>");
         out.println("</html>");
 
@@ -248,9 +268,9 @@ public class WebFound extends HttpServlet {
 
     private void printData(PrintWriter out, ArrayList<String[]> list) {
         for (String[] data : list) {
-            out.println("<tr>");
+            out.println("<tr >");
             for (String dat : data) {
-                out.println("<td style='border: 1px solid black; padding: 10px;'>" + dat + "</td>");
+                out.println("<td style='border: 1px solid black; padding: 10px;background-color: white;'>" + dat + "</td>");
             }
             out.println("</tr>");
         }

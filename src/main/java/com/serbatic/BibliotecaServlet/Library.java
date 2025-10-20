@@ -217,37 +217,45 @@ public class Library {
         if (title == null || title.trim().isEmpty()) {
 
             bookComplete = false;
+            System.out.println("titulo mal");
         }
         if (author == null || author.trim().isEmpty()) {
 
             bookComplete = false;
+            System.out.println("autor mal");
 
         }
         if (isbn == null || isbn.trim().isEmpty()) {
 
             bookComplete = false;
+            System.out.println("isbn mal");
 
         } else {
 
 
+            //libro ya añadido
             if (catalog.contains(new Book("default", "defautl", isbn, null, null))) {
-                System.out.println("Libro ya existente");
+                bookComplete = false;
+                System.out.println("libro ya existente ");
 
 
             }
             if (!checkIsbn(isbn)) {
                 bookComplete = false;
+                System.out.println("isbn  mal");
             }
 
         }
 
         if (publicationDate == null || publicationDate.trim().isEmpty() || !checkDateBegin(publicationDate)) {
             bookComplete = false;
+            System.out.println("fecha mal");
         }
 
 
         if (amount < 0) {
             bookComplete = false;
+            System.out.println("cantidad mal");
         }
 
         if (bookComplete) {
@@ -256,6 +264,7 @@ public class Library {
             catalog.add(book);
 
         } else {
+            System.out.println(bookComplete);
             System.out.println(
                     "   -Libro no añadido:\n" +
                             "Título: " + title + "\n" +

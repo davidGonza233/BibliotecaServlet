@@ -1,172 +1,65 @@
 package com.serbatic.BibliotecaServlet;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.*;
-import com.google.gson.*;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import static com.serbatic.BibliotecaServlet.utils.*;
+@WebServlet("/")
 
+public class Main extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<!DOCTYPE html>");
+        out.println("<html lang='es'>");
+        out.println("<head>");
+        out.println("<meta charset='UTF-8'>");
+        out.println("<title>Biblioteca</title>");
+        out.println(" <style>\n" +
+                "        /* Estilo base de los enlaces */\n" +
+                "        a {\n" +
+                "            color: black;              /* Color negro */\n" +
+                "            font-size: 18px;           /* Tamaño más grande */\n" +
+                "            text-decoration: none;     /* Sin subrayado */\n" +
+                "            font-size: 50px;            /* Se hace un poco más grande */\n" +
 
-public class Main {
-    public static void main(String[] args) {
-        String persistencePath = "C:\\Users\\Formacion\\IdeaProjects\\BibliotecaServlet\\src\\resources\\persistence.json";
-        Set<Book> books = new HashSet<>();
-        Scanner sc = new Scanner(System.in);
-        Library myLibrary = new Library(books);
-
-        // Crea un hilo que detecta cuando se cierra el programa
-
-            //actualizar el fichero con gson
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println(red + "El programa se está cerrando..." + reset);
-                try (Writer writer = new FileWriter(persistencePath)) {
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    gson.toJson(myLibrary.catalog, writer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }));
-
-
-
-
-        // Leer archivo
-        try (Reader reader = new FileReader(persistencePath)) {
-            Gson gson = new GsonBuilder().create();
-
-            // Parseamos el JSON a un JsonArray
-            JsonArray booksArray = JsonParser.parseReader(reader).getAsJsonArray();
-
-            for (JsonElement element : booksArray) {
-                JsonObject b = element.getAsJsonObject();
-
-                // Llamamos a addBookBegin con los valores del JsonObject
-                myLibrary.addBookBegin(
-                        b.get("title").getAsString(),
-                        b.get("author").getAsString(),
-                        b.get("isbn").getAsString(),
-                        b.get("publicationDate").getAsString(), // string "dd/MM/yyyy"
-                        b.get("amount").getAsInt()
-                );
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Archivo JSON no encontrado.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                "        }\n" +
+                "\n" +
+                "        /* Estilo cuando el mouse pasa sobre el enlace */\n" +
+                "        a:hover {\n" +
+                "            text-decoration: underline; /* Se subraya al pasar el mouse */\n" +
+                "            font-size: 60px;            /* Se hace un poco más grande */\n" +
+                "        }\n" +
+                "    </style>");
+        out.println("</head>");
+        // Body centrado vertical y horizontal, fondo completo
+        out.println("<body style=\"margin: 0; height: 100vh; display: flex; flex-direction: column; " +
+                "align-items: center; justify-content: center; " +
+                "background: url('https://images.pexels.com/photos/8830977/pexels-photo-8830977.jpeg') center/cover no-repeat fixed;\">");
 
 
 
-        // Menu
-        String option, optionSearch;
-        boolean search = true, wasAdded = false, wasDeleted = false;
-        do {
-            System.out.println(shinyYellow + "\n<----BIBLIOTECA---->" + reset);
-            System.out.println("¿Que quieres realizar?");
-            System.out.println(blue + " Listar los libros (L)");
-            System.out.println(green + " Añadir libros (A)");
-            System.out.println(magent + " Buscar libros (B)");
-            System.out.println(cyan + " Eliminar libro (E)");
-            System.out.println(white + " Modificar libro (M)");
-            System.out.println(yellow + " Prestar libro (P)" + reset);
-            System.out.println(yellow + " Devolver libro (D)" + reset);
-            System.out.println("Salir (s):");
-            option = sc.nextLine().toLowerCase();
 
-            switch (option) {
-                case "s":
-                    System.out.println("Adios");
-                    break;
-                case "l":
-                    // Listar libros
-                    System.out.println(shinyBlue + "\nLISTA DE LIBROS" + reset);
-                    myLibrary.listBooks();
-                    break;
-                case "a":
-                    //Añadir Libros pidiendo cada dtos y se comprubea al final en caso de que ya exista teniendo en cuenta el isbn
-                    myLibrary.addBook();
-
-                    break;
-                case "b":
-                    //Busqueda y dentro de esta hay un menu donde eligues pporque parametros buscaras los libros
-                    do {
-                        System.out.println(shinyMagent + "\nBUSCAR LIBROS" + reset);
-                        System.out.println("Selecciona por que quires buscar el libro");
-                        System.out.println(magent + "-Titulo (T)");
-                        System.out.println("-Autor (A)" + reset);
-                        System.out.println("Atras (s):");
-                        optionSearch = sc.next().toLowerCase();
-                        sc.nextLine();
-                        switch (optionSearch) {
-                            case "t":
-                                System.out.println("Introduce el titulo a buscar :");
-                                String titulo = sc.nextLine();
-                                System.out.println(magent + " Resultados" + reset);
-                                myLibrary.searchTitle(titulo);
-
-                                break;
-                            case "a":
-                                System.out.println("Introduce el autor a buscar :");
-                                String autor = sc.nextLine();
-                                System.out.println(magent + " Resultados" + reset);
-                                myLibrary.searchAuthor(autor);
-
-                                break;
-                            case "s":
-                                search = false;
-                                System.out.println("Saliendo de busqueda");
-                                break;
-                            default:
-                                System.out.println("Opción invalida, reintentalo porfavor");
-                                break;
-
-                        }
-                    } while (search);
-                    break;
-                case "e":
-                    // Eliminar libro segun el isbn
-                    do {
-                        String isbn;
+        out.println("<a href=\"WebSearch\">Buscar libros</a><br>");
+        out.println("<a href=\"WebAdd\">Añadir libros</a><br>");
 
 
-                        System.out.println(shinyCyan + "\nEliminar LIBRO" + reset);
-                        System.out.println("Para eleminar un libro necesitamos el ISBN:\n(Atras s)");
-                        isbn = sc.nextLine();
-
-                        wasDeleted = myLibrary.deleteBook(isbn);
+        out.println("</body>");
+        out.println("</html>");
 
 
-                    } while (!wasDeleted);
-                    break;
-
-                case "m":
-
-                    myLibrary.modifyBook();
-                    break;
-
-                case "p":
-
-                    myLibrary.lendBook();
-                    break;
-
-                case "d":
-
-                    myLibrary.returnBook();
-                    break;
-
-                default:
-                    System.out.println("Opción invalida, reintentalo porfavor");
-                    break;
-            }
-// Salida del programa
-        } while (!option.equals("s"));
 
 
-        sc.close();
+
+
     }
+
 }
+

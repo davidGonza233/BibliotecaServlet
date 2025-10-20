@@ -20,6 +20,9 @@ public class utils {
     public static final String shinyMagent = "\u001B[95m";
     public static final String shinyCyan = "\u001B[96m";
     public static final String shinyWhite = "\u001B[97m";
+
+  public static final  String persistencePath = "C:\\Users\\Formacion\\IdeaProjects\\BibliotecaServlet\\src\\resources\\persistence.json";
+
 }
 
 
