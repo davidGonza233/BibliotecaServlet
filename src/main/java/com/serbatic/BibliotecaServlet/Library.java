@@ -1,5 +1,11 @@
 package com.serbatic.BibliotecaServlet;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import java.io.*;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -227,6 +233,7 @@ public class Library {
         }
         if (isbn == null || isbn.trim().isEmpty()) {
 
+
             bookComplete = false;
             System.out.println("isbn mal");
 
@@ -234,7 +241,7 @@ public class Library {
 
 
             //libro ya añadido
-            if (catalog.contains(new Book("default", "defautl", isbn, null, null))) {
+            if (catalog.contains(new Book("default", "defautl", isbn.replaceAll("-",""), null, null))) {
                 bookComplete = false;
                 System.out.println("libro ya existente ");
 
@@ -279,79 +286,44 @@ public class Library {
     }
 
     // Borra libro segun el isbn
-    public boolean deleteBook(String isbnFound) {
-        if (isbnFound.trim().equals("s")) {
-            return true;
-        } else {
-            if (isbnFound == null || isbnFound.isBlank()) {
-                System.out.println("    -Isbn invalido");
+    public void deleteBook(String isbnFound) {
 
-            } else {
-
-                if (checkIsbn(isbnFound.trim())) {
-                    for (Book book : catalog) {
-                        if (book.getIsbn().equals(isbnFound.trim())) {
-                            System.out.println("Libro encontrado");
-                            String election;
-                            Scanner sc = new Scanner(System.in);
-                            do {
-                                System.out.println("Libro a eliminar: " + book.toString());
-                                System.out.println("¿Deseas borrarlo? (s/n)");
-                                election = sc.nextLine().toLowerCase();
-                                switch (election.trim()) {
-                                    case "s":
-                                        catalog.remove(book);
-                                        System.out.println("Libro borrado");
-                                        return true;
-
-                                    case "n":
-                                        System.out.println("Cancelación de borrado");
-                                        return false;
-
-                                    default:
-                                        System.out.println("Opcion no valida intentalo de nuevo");
-                                        break;
-                                }
-
-                            } while (election.equals("s") && election.equals("n"));
-
-
-                        }
-                    }
-                    System.out.println("Libro no econtrado");
-                }
-
-
+        Book bookDelete = new Book();
+        for (Book book : catalog) {
+            if (book.getIsbn().equals(isbnFound.trim())) {
+                bookDelete = book;
             }
-            return false;
         }
+        catalog.remove(bookDelete);
+saveLibraryToJson();
+
     }
 
     // Muestra todos los libros con toString
-    public ArrayList<String[]> listBooks() {
-        String[] data;
-        ArrayList<String[]> list = new ArrayList<>();
+    public ArrayList<Book> listBooks() {
+
+        ArrayList<Book> list = new ArrayList<>();
         for (Book book : catalog) {
 
-            data = book.toString().split(";");
-            list.add(data);
+            list.add(book);
+
 
         }
         return list;
     }
 
     // Busqueda por titulo
-    public ArrayList<String[]> searchTitle(String titleFound) {
+    public ArrayList<Book> searchTitle(String titleFound) {
 
-        String[] data;
-        ArrayList<String[]> list = new ArrayList<>();
+
+        ArrayList<Book> list = new ArrayList<>();
 
         for (Book book : catalog) {
 
 
-            if (Normalizer.normalize(book.getTitle().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").contains(Normalizer.normalize(titleFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
-                data = book.toString().split(";");
-                list.add(data);
+            if (Normalizer.normalize(book.getTitle().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                    .contains(Normalizer.normalize(titleFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
+                list.add(book);
             }
 
         }
@@ -359,17 +331,38 @@ public class Library {
     }
 
     // Busqueda por Autor
-    public ArrayList<String[]> searchAuthor(String authorFound) {
+    public ArrayList<Book> searchAuthor(String authorFound) {
 
-        String[] data;
-        ArrayList<String[]> list = new ArrayList<>();
+
+        ArrayList<Book> list = new ArrayList<>();
 
         for (Book book : catalog) {
 
 
-            if (Normalizer.normalize(book.getAuthor().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").contains(Normalizer.normalize(authorFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
-                data = book.toString().split(";");
-                list.add(data);
+            if (Normalizer.normalize(book.getAuthor().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                    .contains(Normalizer.normalize(authorFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
+
+                list.add(book);
+            }
+
+        }
+        return list;
+
+
+    }
+
+    // Busqueda por isbn
+    public ArrayList<Book> searchIsbn(String isbnFound) {
+
+
+        ArrayList<Book> list = new ArrayList<>();
+
+        for (Book book : catalog) {
+
+
+            if (Normalizer.normalize(book.getIsbn().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").contains(Normalizer.normalize(isbnFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
+
+                list.add(book);
             }
 
         }
@@ -555,160 +548,64 @@ public class Library {
     }
 
     //Prestar libros elemina de cantidad
-    public void lendBook() {
-        Scanner sc = new Scanner(System.in);
-        String isbn;
-        Integer amount = null;
-        boolean isbnValid, amountValid = false;
-        System.out.println(shinyYellow + "\nPrestar LIBRO" + reset);
-        do {
-            System.out.println("¿Que libro te gustaría tomar prestado?");
-            System.out.println("Dame el ISBN (Salir s):");
+    public void lendBook(int amount, String isbn) {
 
-            isbn = sc.nextLine().trim();
 
-            if (isbn.equalsIgnoreCase("s")) {
-                System.out.println("Saliendo");
-                break;
+        for (Book book : catalog) {
+            if (book.getIsbn().replaceAll("-", "").trim().equals(isbn.replaceAll("-", ""))) {
+                System.out.println("Libro seleccionado: " + book.toString());
+
+                book.setAmount(book.getAmount() - amount);
+                System.out.println("Prestados " + amount + " libros, quedan " + book.getAmount() + "\n");
+
+                saveLibraryToJson();
             }
+        }
 
 
-            if (isbn.isBlank()) {
-                System.out.println("    -Isbn vacio");
-
-            } else if (catalog.contains(new Book("default", "defautl", isbn, null, null))) {
-                isbnValid = checkIsbn(isbn);
-                if (isbnValid) {
-
-                    for (Book book : catalog) {
-                        if (book.getIsbn().replaceAll("-", "").trim().equals(isbn.replaceAll("-", ""))) {
-                            System.out.println("Libro seleccionado: " + book.toString());
-                            if (book.getAmount() <= 0) {
-                                System.out.println("    -No hay ejemplares disponibles, añade mas o devuelvelos");
-                            } else {
-                                do {
-                                    System.out.println("Dame la cantidad de ejemplares a prestar (Atras a):");
-                                    try {
-                                        amount = sc.nextInt();
-                                        if (amount > book.getAmount()) {
-                                            System.out.println("    -No hay suficientes ejemplares quieres " + amount + " y hay " + book.getAmount());
-                                        } else {
-
-                                            if (amount == 0) {
-                                                System.out.println("    -Debes sacar al menos un ejemplar");
-                                            } else if (amount < 0) {
-                                                System.out.println("    -Cantidad inválida, no puedes retirar una cantidad negativos");
-                                            } else {
-                                                book.setAmount(book.getAmount() - amount);
-                                                System.out.println("Prestados " + amount + " libros, quedan " + book.getAmount() + "\n");
-                                                sc.nextLine();
-                                                amountValid = true;
-                                            }
-                                        }
-                                    } catch (InputMismatchException e) {
-
-
-                                        if (sc.nextLine().equalsIgnoreCase("a")) {
-
-                                            break;
-                                        } else {
-                                            System.out.println("    -Cantidad inválida");
-
-                                        }
-
-                                    }
-                                } while (!amountValid);
-
-                            }
-                        }
-                    }
-                }
-            } else {
-                System.out.println("    -Libro no encontrado, ISBN mal introducido");
-
-            }
-
-
-        } while (!isbn.equalsIgnoreCase("s"));
     }
 
     // Devuelve libros añade a cantidad
-    public void returnBook() {
-        Scanner sc = new Scanner(System.in);
-        String isbn;
-        Integer amount = null;
-        boolean isbnValid, amountValid = false;
-        System.out.println(shinyYellow + "\nDevolver LIBRO" + reset);
-        do {
-            System.out.println("¿Que libro te gustaría devolver?");
-            System.out.println("Dame el ISBN (Salir s):");
+    public void returnBook(int amount, String isbn) {
 
-            isbn = sc.nextLine().trim();
 
-            if (isbn.equalsIgnoreCase("s")) {
-                System.out.println("Saliendo");
-                break;
+        for (Book book : catalog) {
+            if (book.getIsbn().replaceAll("-", "").trim().equals(isbn.replaceAll("-", ""))) {
+                System.out.println("Libro seleccionado: " + book.toString());
+
+                book.setAmount(book.getAmount() + amount);
+                System.out.println("Devueltos " + amount + " libros, quedan " + book.getAmount() + "\n");
+
+                saveLibraryToJson();
+            }
+        }
+    }
+
+    public void saveLibraryToJson() {
+
+        try (Writer writer = new BufferedWriter(new FileWriter(persistencePath))) {
+            JsonArray booksArray = new JsonArray();
+
+            //crea el objeto y los añade a la lista para luego añadirlos al json
+
+            for (Book book : catalog) {
+
+                JsonObject obj = new JsonObject();
+                obj.addProperty("title", book.getTitle());
+                obj.addProperty("author", book.getAuthor());
+                obj.addProperty("isbn", book.getIsbn());
+                obj.addProperty("publicationDate", book.getPublicationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                obj.addProperty("amount", book.getAmount());
+
+                booksArray.add(obj);
             }
 
+            // Para que quede bonito con indentación
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(booksArray, writer);
 
-            if (isbn.isBlank()) {
-                System.out.println("    -Isbn vacio");
-
-
-            } else {
-                if (isbn.equalsIgnoreCase("s")) {
-                    System.out.println("Saliendo");
-                    break;
-                }
-
-                if (catalog.contains(new Book("default", "defautl", isbn, null, null))) {
-                    isbnValid = checkIsbn(isbn);
-                    if (isbnValid) {
-
-                        for (Book book : catalog) {
-                            if (book.getIsbn().replaceAll("-", "").trim().equals(isbn.replaceAll("-", ""))) {
-                                System.out.println("Libro seleccionado: " + book.toString());
-
-                                do {
-                                    System.out.println("Dame la cantidad de ejemplares a devolver (Atras a):");
-                                    try {
-                                        amount = sc.nextInt();
-
-                                        if (amount == 0) {
-                                            System.out.println("    -Debes devolver al menos un ejemplar");
-                                        } else if (amount < 0) {
-                                            System.out.println("    -Cantidad inválida, no puedes devolver una cantidad negativa");
-                                        } else {
-                                            book.setAmount(book.getAmount() + amount);
-                                            System.out.println("Devueltos " + amount + " libros, hay " + book.getAmount() + "\n");
-                                            sc.nextLine();
-                                            amountValid = true;
-                                        }
-
-                                    } catch (InputMismatchException e) {
-
-
-                                        if (sc.nextLine().equalsIgnoreCase("a")) {
-
-                                            break;
-                                        } else {
-                                            System.out.println("    -Cantidad inválida");
-
-                                        }
-
-                                    }
-                                } while (!amountValid);
-
-                            }
-                        }
-                    }
-                } else {
-
-                    System.out.println("    -Libro no encontrado, ISBN mal introducido");
-
-                }
-
-            }
-        } while (!isbn.equalsIgnoreCase("s"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

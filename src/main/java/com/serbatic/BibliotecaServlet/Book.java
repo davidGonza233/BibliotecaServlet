@@ -21,6 +21,9 @@ public class Book {
         this.publicationDate = publicationDate;
         this.amount = amount;
     }
+    public Book() {
+
+    }
 
     public void setAmount(Integer amount) {
         this.amount = amount;
