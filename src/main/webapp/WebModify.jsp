@@ -66,6 +66,30 @@
            text-decoration: underline;
            font-size: 25px;
        }
+        table {
+                   border-collapse: collapse;
+                   margin-top: 20px;
+                   width: 90%;
+
+                   text-align: left;
+               }
+
+               th, td {
+               background-color: white;
+                   padding: 8px 12px;
+                   border: 1px solid #ddd;
+               }
+
+               th {
+                   background-color: #f2f2f2;
+               }
+
+               caption {
+                   caption-side: top;
+                   font-weight: bold;
+                   font-size: 18px;
+                   margin-bottom: 10px;
+               }
 
     </style>
 </head>
@@ -73,8 +97,8 @@
              align-items: center; justify-content: center;
              background: url('https://images.pexels.com/photos/8834282/pexels-photo-8834282.jpeg') center/cover no-repeat fixed;">
 
-    <h1>AÑADIR LIBROS</h1>
-    <h2>Campos</h2>
+    <h1>Modificar LIBROS</h1>
+
 <%
     java.time.LocalDate hoy = java.time.LocalDate.now();
 
@@ -90,52 +114,48 @@
 
     request.setAttribute("maxDate", maxDate);
 %>
-    <form id="formulario" action="/BibliotecaServlet/WebAddServlet" method="GET">
-
+<table>
+  <caption>Libro a modificar</caption>
+<tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>ISBN</th>
+                <th>Cantidad</th>
+                 <th>Fecha de publicación</th>
+            </tr>
+            <tr>
+<td>${chosen.title}</td>
+<td>${chosen.author}</td>
+<td>${chosen.isbn}</td>
+<td>${chosen.amount}</td>
+<td>${chosen.publicationDate}</td>
+ </tr>
+</table>
+<h2>Campos </h2>
+<p>(Dejar vacios para mantener lo anterior)</p>
+    <form id="formulario" action="/BibliotecaServlet/WebSearchModifyServlet" method="POST">
+  <input type="hidden" name="isbn" value ="${chosen.isbn}" ><br>
         <label>Título del libro:</label>
         <input type="text" name="titulo" pattern=".*\S.*"
-               title="No puede estar en blanco" placeholder="Título del libro" value="${title}" required><br>
+               title="No puede estar en blanco" placeholder="Título del libro" ><br>
 
 
         <label>Autor del libro:</label>
         <input type="text" name="autor" pattern=".*\S.*"
-               title="No puede estar en blanco" placeholder="Autor del libro" value="${author}" required><br>
-
-
-        <label>ISBN del libro:</label>
-        <input type="text" name="isbn"
-               pattern="^97[89]\d{10}$|^97[89]-\d{1,5}-\d{1,7}-\d{1,7}-\d$"
-               title="Debe empezar por 978 o 979 y tener trece dígitos, si añades guiones deben ser cuatro y estar correctamente posicionados"
-               placeholder="ISBN" required><br>
-
+               title="No puede estar en blanco" placeholder="Autor del libro" ><br>
 
         <label>Cantidad del libro:</label>
-        <input type="number" name="cantidad" min="1" max ="2147483647" placeholder="Cantidad de libros" value="${amount}" required><br>
+        <input type="number" name="cantidad" min="1" max ="2147483647" placeholder="Cantidad" ><br>
 
 
         <label>Fecha de publicación del libro:</label>
         <input type="date" name="fechaPublicacion" min="1950-01-01"
-               max="${maxDate}"  value="${date}" required><br>
+               max="${maxDate}" ><br>
 
 
         <input type="submit" name="enviar" value="Guardar"><br>
     </form>
 
-<c:if test="${ejecutado}">
-
-
-    <c:if test="${guardado}">
-        <div class="mensaje">¡Libro guardado correctamente!</div>
-    </c:if>
-
-    <c:if test="${!guardado}">
-        <div class="mensaje">¡Libro no guardado!</div>
-    </c:if>
-
-    <c:if test="${exist}">
-        <div class="mensaje">¡Libro ya existente (ISBN repetido)!</div>
-    </c:if>
-  </c:if>
     <a href="index.jsp"> ➤ Inicio</a><br>
 </body>
 </html>

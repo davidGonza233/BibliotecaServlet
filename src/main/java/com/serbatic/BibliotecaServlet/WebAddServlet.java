@@ -53,12 +53,10 @@ public class WebAddServlet extends HttpServlet {
         String boton = request.getParameter("enviar");
         String title;
         String author;
-        String isbn ;
-        int amount  ;
+        String isbn;
+        int amount;
         String publicationDate;
-boolean guardado = false,exist =false, ejecutado = false;
-
-
+        boolean guardado = false, exist = false, ejecutado = false;
 
 
         if (boton != null) {
@@ -71,47 +69,52 @@ boolean guardado = false,exist =false, ejecutado = false;
             // Convertir a LocalDate
             LocalDate fecha = LocalDate.parse(publicationDate);
 // Formatear a dd/MM/yyyy
-             String finalDate = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
+            String finalDate = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
 
             Library myLibrary = (Library) getServletContext().getAttribute("library");
-            boolean added = myLibrary.addBookBegin(title, author, isbn, finalDate, amount);
-            if (added) {
-                try (Writer writer = new BufferedWriter(new FileWriter(utils.persistencePath))) {
-                    JsonArray booksArray = new JsonArray();
 
-                    //crea el objeto y los añade a la lista para luego añadirlos al json
+// Verificar si el ISBN ya existe
+            exist = !myLibrary.searchIsbn(isbn).isEmpty();
 
-                    for (Book book : myLibrary.catalog) {
-                        JsonObject obj = new JsonObject();
-                        obj.addProperty("title", book.getTitle());
-                        obj.addProperty("author", book.getAuthor());
-                        obj.addProperty("isbn", book.getIsbn());
-                        obj.addProperty("publicationDate", book.getPublicationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                        obj.addProperty("amount", book.getAmount());
+            if (exist) {
+                // No agregar, marcar que ya existe
+                request.setAttribute("exist", true);
+                request.setAttribute("title", title);
+                request.setAttribute("author", author);
+                request.setAttribute("date", publicationDate);
+                request.setAttribute("amount", String.valueOf(amount));
+            } else {
+                // Agregar libro
+                boolean added = myLibrary.addBookBegin(title, author, isbn, finalDate, amount);
+                if (added) {
+                    try (Writer writer = new BufferedWriter(new FileWriter(utils.persistencePath))) {
+                        JsonArray booksArray = new JsonArray();
 
-                        booksArray.add(obj);
+                        //crea el objeto y los añade a la lista para luego añadirlos al json
+
+                        for (Book book : myLibrary.catalog) {
+                            JsonObject obj = new JsonObject();
+                            obj.addProperty("title", book.getTitle());
+                            obj.addProperty("author", book.getAuthor());
+                            obj.addProperty("isbn", book.getIsbn());
+                            obj.addProperty("publicationDate", book.getPublicationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                            obj.addProperty("amount", book.getAmount());
+
+                            booksArray.add(obj);
+                        }
+
+                        // Para que quede bonito con indentación
+                        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                        gson.toJson(booksArray, writer);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-                    // Para que quede bonito con indentación
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    gson.toJson(booksArray, writer);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    guardado = true;
+                    request.setAttribute("guardado", true);
                 }
-
-                guardado = true;
-            } else {
-                if (myLibrary.catalog.contains(new Book("default", "defautl", isbn.replaceAll("-",""), null, null))) {
-
-
-              exist = true;
-
-                }
-
-
             }
 
 

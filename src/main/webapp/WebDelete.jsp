@@ -119,7 +119,7 @@
                 <th>ISBN</th>
                 <th>Fecha de publicación</th>
                 <th>Cantidad</th>
-                <th>Cantidad a eliminar</th>
+
 
 
             </tr>

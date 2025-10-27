@@ -92,6 +92,22 @@
 </head>
 <body>
 
+    <!-- Mensaje de cantidad sobrepasada -->
+    <c:if test="${numero!=null && !numero}">
+
+        <div class="mensaje">¡Cantidad de libros devuelto sobrepasa el limite!  ${numero}</div>
+    </c:if>
+
+
+    <!-- Mensajes de préstamo o devolución -->
+    <c:if test="${prestado}">
+        <div class="mensaje">¡Libro prestado correctamente!</div>
+    </c:if>
+    <c:if test="${devuelto}">
+        <div class="mensaje">¡Libro devuelto correctamente!</div>
+    </c:if>
+
+
     <h1>PRÉSTAMO</h1>
 
     <form id="formulario" action="/BibliotecaServlet/WebLendServlet" method="GET">
@@ -104,12 +120,7 @@
         <input type="submit" name="buscar" value="Buscar"><br>
     </form>
 
-<c:if test="${prestado}">
-            <div class="mensaje">¡Libro prestado correctamente!</div>
-     </c:if>
-     <c:if test="${devuelto}">
-                 <div class="mensaje">¡Libro devuelto correctamente!</div>
-          </c:if>
+
     <c:if test="${busquedaCompleta}">
         <table>
             <caption>Lista de Libros</caption>
@@ -143,7 +154,7 @@
                     <td>
 
                         <form action="/BibliotecaServlet/WebLendServlet" method="GET" style=" align-items:center; ">
-                            <input type="number" name="cantidadDevolucion" min="1"
+                            <input type="number" name="cantidadDevolucion" min="1" max="2147483647"
                                    placeholder="Cantidad" required style="width: 80px; text-align: center;">
                             <input type="hidden" name="isbn" value="${book.isbn}">
                             <input type="submit" name ="devolver"value="Devolver">
@@ -153,6 +164,7 @@
                 </tr>
             </c:forEach>
         </table>
+
     </c:if>
 
 
@@ -189,7 +201,7 @@
                                             <td>
 
                                                 <form action="/BibliotecaServlet/WebLendServlet" method="GET" style=" align-items:center; ">
-                                                    <input type="number" name="cantidadDevolucion" min="1"
+                                                    <input type="number" name="cantidadDevolucion" min="1" max ="2147483647"
                                                            placeholder="Cantidad" required style="width: 80px; text-align: center;">
                                                     <input type="hidden" name="isbn" value="${book.isbn}">
                                                     <input type="submit" name ="devolver"value="Devolver">
@@ -199,6 +211,7 @@
                     </tr>
                 </c:forEach>
             </table>
+
         </c:if>
         <c:if test="${!hayResultados}">
             <h2>Sin resultados</h2>

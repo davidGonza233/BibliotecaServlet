@@ -1,24 +1,32 @@
 package com.serbatic.BibliotecaServlet;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 
-import java.util.*;
 
+@WebServlet("/WebSearchModifyServlet")
 
-@WebServlet("/WebLendServlet")
-
-public class WebLendServlet extends HttpServlet {
-    boolean numero = true ;
+public class WebSearchModifyServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+
         Library myLibrary = new Library(new HashSet<>());
 
         // Leer archivo JSON y cargar libros
@@ -45,46 +53,68 @@ public class WebLendServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         Library myLibrary = (Library) getServletContext().getAttribute("library");
+        Book theChosenOne = new Book();
 
-
-        boolean busquedaCompleta = false, busquedaParcial = false, prestado = false, hayResultados = false, devuelto = false;
+        boolean busquedaCompleta = false, busquedaParcial = false, modificado = false, hayResultados = false, ejecutado = false;
 
         String buscarBtn = request.getParameter("buscar");
+        String enviar = request.getParameter("enviar");
+        String botonModificar = request.getParameter("modificar");
+
         String isbn = request.getParameter("isbn");
 
-        String botonPrestar = request.getParameter("prestar");
 
-        if (botonPrestar != null) {
-            // Se ha clicado el botón "Prestar"
+        if (botonModificar != null) {
+            ejecutado = true;
+            // Se ha clicado el botón "modificar"
             isbn = request.getParameter("isbn");
-            int cantidad = Integer.parseInt(request.getParameter("cantidadPrestamo"));
 
-            myLibrary.lendBook(cantidad, isbn);
+            theChosenOne = myLibrary.searchIsbn(isbn).get(0);
+            request.setAttribute("chosen", theChosenOne);
+            request.getRequestDispatcher("/WebSearchModify.jsp").forward(request, response);
 
-            prestado = true;
         }
 
-        String botonDevolver = request.getParameter("devolver");
 
-        if (botonDevolver != null) {
-            // Se ha clicado el botón "Prestar"
-            isbn = request.getParameter("isbn");
-            int cantidad = Integer.parseInt(request.getParameter("cantidadDevolucion"));
+        String title;
+        String author;
+        int amount;
+        String publicationDate;
 
-            numero = myLibrary.returnBook(cantidad, isbn);
 
-            if (!numero) {
-                devuelto = false;
+        if (enviar != null) {
+
+            theChosenOne = myLibrary.searchIsbn(request.getParameter("isbn")).get(0);
+            title = request.getParameter("titulo").trim();
+            author = request.getParameter("autor").trim();
+            if (request.getParameter("cantidad") != null && !request.getParameter("cantidad").isBlank()) {
+                amount = Integer.parseInt(request.getParameter("cantidad"));
+            } else {
+
+                amount = 0;
             }
+            publicationDate = request.getParameter("fechaPublicacion");
+            String finalDate;
+            // Reformatear la fecha si es necesario
+            if (publicationDate != null && !publicationDate.isBlank()) {
+                LocalDate fecha = LocalDate.parse(publicationDate);
+                finalDate = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                myLibrary.modifyBook(title, author, isbn, amount, finalDate);
+            } else {
+                finalDate = theChosenOne.getPublicationDate()
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            }
+
+
+           modificado= myLibrary.modifyBook(title, author, isbn, amount, finalDate);
+
+
         }
-
-
-
         if (buscarBtn != null) {
             if (isbn.isBlank()) {
                 busquedaCompleta = true;
@@ -116,15 +146,15 @@ public class WebLendServlet extends HttpServlet {
             }
         }
 
-        request.setAttribute("numero", numero);
 
-        request.setAttribute("prestado", prestado);
-        request.setAttribute("devuelto", devuelto);
-        System.out.println(numero);
+        request.setAttribute("chosen", theChosenOne);
+        request.setAttribute("modificado", modificado);
+
+        request.setAttribute("ejecutado", ejecutado);
         request.setAttribute("busquedaCompleta", busquedaCompleta);
         request.setAttribute("busquedaParcial", busquedaParcial);
         request.setAttribute("hayResultados", hayResultados);
-        request.getRequestDispatcher("/WebLend.jsp").forward(request, response);
+        request.getRequestDispatcher("/WebSearchModify.jsp").forward(request, response);
     }
 
 

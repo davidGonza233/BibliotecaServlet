@@ -241,7 +241,7 @@ public class Library {
 
 
             //libro ya añadido
-            if (catalog.contains(new Book("default", "defautl", isbn.replaceAll("-",""), null, null))) {
+            if (catalog.contains(new Book("default", "defautl", isbn.replaceAll("-", ""), null, null))) {
                 bookComplete = false;
                 System.out.println("libro ya existente ");
 
@@ -295,7 +295,7 @@ public class Library {
             }
         }
         catalog.remove(bookDelete);
-saveLibraryToJson();
+        saveLibraryToJson();
 
     }
 
@@ -360,7 +360,7 @@ saveLibraryToJson();
         for (Book book : catalog) {
 
 
-            if (Normalizer.normalize(book.getIsbn().toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").contains(Normalizer.normalize(isbnFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "").trim())) {
+            if (Normalizer.normalize(book.getIsbn().toLowerCase(), Normalizer.Form.NFD).replaceAll("-", "").contains(Normalizer.normalize(isbnFound.toLowerCase(), Normalizer.Form.NFD).replaceAll("-", "").trim())) {
 
                 list.add(book);
             }
@@ -449,102 +449,44 @@ saveLibraryToJson();
     }
 
 
-    public boolean modifyBook() {
-        Scanner sc = new Scanner(System.in);
-        String isbnFound, password;
-        //Modifcar si sabes la contraseña
-        System.out.println(shinyWhite + "\nModificar LIBRO" + reset);
-        System.out.println("Para modificar un libro necesitamos el ISBN y la contraseña:\n(Atras s)");
+    public boolean modifyBook(String title, String author, String isbn, int amount, String publicationDate) {
+        boolean modificado = false;
+
+        for (Book book : catalog) {
 
 
-        do {
-            System.out.println("Dame la contraseña (Salir s):");
-            password = sc.nextLine().trim();
-            if (password.equalsIgnoreCase("s")) {
-                return false;
-            }
-            if (password.equals("F0rm4c10n")) {
-                do {
+            if (Normalizer.normalize(book.getIsbn().toLowerCase(), Normalizer.Form.NFD)
+                    .replaceAll("-", "")
+                    .trim()
+                    .equals(Normalizer.normalize(isbn.toLowerCase(), Normalizer.Form.NFD)
+                            .replaceAll("-", "")
+                            .trim())) {
 
-                    System.out.println("Dame el ISBN (Salir s):");
-                    isbnFound = sc.nextLine().trim();
+                if (title != null && !title.isBlank()) {
+                    book.setTitle(title);
+                    modificado = true;
+                }
+                if (author != null && !author.isBlank()) {
+                    book.setAuthor(author);
+                    modificado = true;
+                }
+                if (amount > 0) {
+                    book.setAmount(amount);
+                    modificado = true;
+                }
+                if (publicationDate != null && !publicationDate.trim().isEmpty() && checkDateBegin(publicationDate)) {
 
-                    if (isbnFound.equalsIgnoreCase("s")) {
-                        System.out.println("Saliendo");
-                        return false;
-                    }
-
-                    if (isbnFound.isBlank()) {
-                        System.out.println("    -ISBN vacio");
-                        checkIsbn(isbnFound);
-                    }
-                    if (catalog.contains(new Book("default", "defautl", isbnFound, null, null))) {
-
-                        for (Book book : catalog) {
-                            if (book.getIsbn().replaceAll("-", "").trim().equals(isbnFound.replaceAll("-", ""))) {
-                                System.out.println("Libro encontrado");
-                                String election;
-
-                                do {
-                                    System.out.println("Libro a modificar: " + book.toString());
-                                    System.out.println("¿Que deseas modificar?");
-                                    System.out.println("-Tiutlo (T)");
-                                    System.out.println("-Autor (A)");
-                                    System.out.println("-Fecha de publicacion (F)");
-                                    System.out.println("Salir (s)");
-                                    election = sc.nextLine().toLowerCase();
-                                    switch (election) {
-                                        case "s":
-                                            System.out.println("Saliendo");
-                                            break;
-
-                                        case "t":
-                                            System.out.println("Titulo antiguo: " + book.getTitle());
-                                            System.out.println("Titulo nuevo: ");
-                                            book.setTitle(sc.nextLine().trim());
-                                            break;
-
-                                        case "a":
-                                            System.out.println("Autor antiguo: " + book.getAuthor());
-                                            System.out.println("Autor nuevo: ");
-                                            book.setAuthor(sc.nextLine().trim());
-                                            break;
-
-
-                                        case "f":
-                                            System.out.println("Fecha antigua: " + book.getPublicationDate());
-                                            System.out.println("Fecha nueva: ");
-                                            String fecha = sc.nextLine().trim();
-                                            if (checkDate(fecha)) {
-                                                book.setPublicationDate(LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                                            } else {
-                                                System.out.println("Fecha no valida");
-
-                                            }
-
-                                            break;
-
-
-                                        default:
-                                            System.out.println("Opcion no valida intentalo de nuevo");
-                                            break;
-                                    }
-
-                                } while (!election.equals("s"));
-
-                            }
-                        }
-                    } else {
-                        System.out.println("Libro no encontrado");
-                    }
-                } while (!isbnFound.equalsIgnoreCase("s"));
-            } else {
-                System.out.println("Acceso denegado");
-                password = "";
+                    book.setPublicationDate(LocalDate.parse(publicationDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    modificado = true;
+                }
+                saveLibraryToJson();
+                return modificado;
             }
 
-        } while (!password.equalsIgnoreCase("s"));
-        return false;
+        }
+
+
+        return modificado;
     }
 
     //Prestar libros elemina de cantidad
@@ -566,19 +508,26 @@ saveLibraryToJson();
     }
 
     // Devuelve libros añade a cantidad
-    public void returnBook(int amount, String isbn) {
+    public boolean returnBook(int amount, String isbn) {
 
 
         for (Book book : catalog) {
             if (book.getIsbn().replaceAll("-", "").trim().equals(isbn.replaceAll("-", ""))) {
                 System.out.println("Libro seleccionado: " + book.toString());
 
-                book.setAmount(book.getAmount() + amount);
-                System.out.println("Devueltos " + amount + " libros, quedan " + book.getAmount() + "\n");
+                if((Double.parseDouble(String.valueOf(book.getAmount())) + Double.parseDouble(String.valueOf(amount)))<2147483647){
+                    book.setAmount(book.getAmount() + amount);
+                    System.out.println("Devueltos " + amount + " libros, quedan " + book.getAmount() + "\n");
+                }else{
+                    System.out.println("numero demasiado largo");
+                    return false;
+                }
+
 
                 saveLibraryToJson();
             }
         }
+        return true;
     }
 
     public void saveLibraryToJson() {

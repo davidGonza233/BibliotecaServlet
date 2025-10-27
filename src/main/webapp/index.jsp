@@ -34,5 +34,6 @@
     <a href="WebAdd.jsp">Añadir libros</a><br>
     <a href="WebLend.jsp">Prestación libros</a><br>
      <a href="WebDelete.jsp">Eliminar libros</a><br>
+     <a href="WebSearchModify.jsp">Modificar libros</a><br>
 </body>
 </html>

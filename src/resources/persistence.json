@@ -1,19 +1,5 @@
 [
   {
-    "title": "dsafa",
-    "author": "paco",
-    "isbn": "978-000-000-000-7",
-    "publicationDate": "17/10/2025",
-    "amount": 2
-  },
-  {
-    "title": "Crónica de una muerte anunciada",
-    "author": "Gabriel García Márquez",
-    "isbn": "9780307387747",
-    "publicationDate": "01/03/1981",
-    "amount": 0
-  },
-  {
     "title": "titulo",
     "author": "gabriel",
     "isbn": "978-000-000-009-0",
@@ -25,21 +11,14 @@
     "author": "Carlos Ruiz Zafón",
     "isbn": "9788408172177",
     "publicationDate": "17/04/2001",
-    "amount": 10
+    "amount": 1000000021
   },
   {
-    "title": "a",
+    "title": "adsf",
     "author": "gabriel",
     "isbn": "978-000-000-000-3",
-    "publicationDate": "11/10/2025",
-    "amount": 1
-  },
-  {
-    "title": "a",
-    "author": "gabriel",
-    "isbn": "978-000-000-000-4",
-    "publicationDate": "12/10/2025",
-    "amount": 6
+    "publicationDate": "16/10/2025",
+    "amount": 3
   },
   {
     "title": "Fahrenheit 451",
@@ -56,13 +35,6 @@
     "amount": 1
   },
   {
-    "title": "a",
-    "author": "gabriel",
-    "isbn": "9780000000000",
-    "publicationDate": "03/10/2025",
-    "amount": 5650
-  },
-  {
     "title": "adsf",
     "author": "af",
     "isbn": "978-000-000-000-6",
@@ -72,9 +44,9 @@
   {
     "title": "a",
     "author": "gabriel",
-    "isbn": "978-000-000-000-1",
-    "publicationDate": "11/10/2025",
-    "amount": 5
+    "isbn": "978-000-000-000-0",
+    "publicationDate": "09/10/2025",
+    "amount": 1
   },
   {
     "title": "cien",
@@ -82,13 +54,6 @@
     "isbn": "978-000-080-000-0",
     "publicationDate": "21/10/2025",
     "amount": 1
-  },
-  {
-    "title": "erw",
-    "author": "adsf",
-    "isbn": "978-000-000-050-3",
-    "publicationDate": "09/10/2025",
-    "amount": 3
   },
   {
     "title": "a",
@@ -109,7 +74,7 @@
     "author": "Patrick Rothfuss",
     "isbn": "978-84-672-2062-2",
     "publicationDate": "27/03/2007",
-    "amount": 9
+    "amount": 8
   },
   {
     "title": "titulo",
@@ -145,5 +110,75 @@
     "isbn": "9780451524935",
     "publicationDate": "08/06/1950",
     "amount": 8
+  },
+  {
+    "title": "Crónica de una muerte anunciada",
+    "author": "Gabriel García Márquez",
+    "isbn": "9780307387731",
+    "publicationDate": "01/03/1981",
+    "amount": 10
+  },
+  {
+    "title": "Los juegos del hambre",
+    "author": "Suzanne Collins",
+    "isbn": "9780439023481",
+    "publicationDate": "14/09/2008",
+    "amount": 20
+  },
+  {
+    "title": "Harry Potter y la piedra filosofal",
+    "author": "J.K. Rowling",
+    "isbn": "9788478884452",
+    "publicationDate": "26/06/1997",
+    "amount": 15
+  },
+  {
+    "title": "El código Da Vinci",
+    "author": "Dan Brown",
+    "isbn": "9780307474271",
+    "publicationDate": "18/03/2003",
+    "amount": 9
+  },
+  {
+    "title": "Orgullo y prejuicio",
+    "author": "Jane Austen",
+    "isbn": "9780141439518",
+    "publicationDate": "28/01/1813",
+    "amount": 6
+  },
+  {
+    "title": "It",
+    "author": "Stephen King",
+    "isbn": "9781501142970",
+    "publicationDate": "15/09/1986",
+    "amount": 4
+  },
+  {
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "isbn": "9780441172719",
+    "publicationDate": "01/08/1965",
+    "amount": 11
+  },
+  {
+    "title": "El Alquimista",
+    "author": "Paulo Coelho",
+    "isbn": "9780061122415",
+    "publicationDate": "01/01/1988",
+    "amount": 13
+  },
+  {
+    "title": "El principito",
+    "author": "Antoine de Saint-Exupéry",
+    "isbn": "9780156012195",
+    "publicationDate": "06/04/1943",
+    "amount": 25
+  },
+  {
+    "title": "Los pilares de la Tierra",
+    "author": "Ken Follett",
+    "isbn": "9780451225245",
+    "publicationDate": "01/10/1989",
+    "amount": 7
   }
 ]
